@@ -1,4 +1,4 @@
-# 🏢 WorkSphere — Employee Management System
+# 🏢 Workbuff — Employee Management System
 
 A full-stack **Employee Management System** built with React, Node.js, Express, and MongoDB. Manage employees, departments, attendance, leaves, salaries, and more — with a premium modern UI.
 
