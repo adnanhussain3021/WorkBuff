@@ -66,7 +66,6 @@ employee-management-system/
 │   ├── routes/             # API routes
 │   ├── db/                 # Database connection
 │   └── public/uploads/     # Uploaded files
-│
 ```
 
 ---
