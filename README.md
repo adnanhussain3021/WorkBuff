@@ -46,7 +46,7 @@ A full-stack **Employee Management System** built with React, Node.js, Express, 
 | **Charts** | Recharts |
 | **PDF** | jsPDF + jspdf-autotable |
 | **Icons** | React Icons |
-| **Hosting** | Vercel (frontend) + Render (backend) |
+| **Hosting** | Currently Locally but can be hosted using vercel  |
 
 ---
 
@@ -60,7 +60,6 @@ employee-management-system/
 │   │   ├── context/        # Auth & Theme context
 │   │   ├── pages/          # Page layouts
 │   │   └── utils/          # API config
-│   └── vercel.json         # Vercel SPA routing config
 │
 ├── server/                 # Backend (Express)
 │   ├── controllers/        # Route handlers
