@@ -68,7 +68,7 @@ app.use('/api/notification', notificationRouter);
 app.use('/api/announcement', announcementRouter);
 app.use('/api/holiday', holidayRouter);
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   app.use(express.static(path.join(__dirname, '../ems/dist')));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../ems/dist/index.html'));
