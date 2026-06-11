@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix ems\" \"npm run start --prefix server\"",
-    "build": "npm run build --prefix ems",
+    "build": "npm run build --prefix ems && rm -rf dist && mv ems/dist dist",
     "start": "npm run start --prefix server",
     "postinstall": "npm install --prefix server && npm install --prefix ems"
   },
