@@ -52,7 +52,8 @@ const addEmployee = async (req, res) => {
       } catch (clerkErr) {
         console.error('Clerk user creation error:', clerkErr.errors || clerkErr.message);
         // If user already exists in Clerk, continue (they can still login)
-        if (clerkErr.status !== 422) {
+        const isExists = clerkErr.errors?.some(e => e.code === 'form_identifier_exists');
+        if (!isExists) {
           return res.status(400).json({ success: false, error: clerkErr.errors?.[0]?.longMessage || "Failed to create login account" });
         }
       }

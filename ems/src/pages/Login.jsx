@@ -110,14 +110,20 @@ const Login = () => {
   // ========== LOGIN ==========
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!signInLoaded) return;
     setError(null);
     setIsLoading(true);
-    if (!signInLoaded) return;
 
     try {
       const result = await signIn.create({ identifier: email, password });
       if (result.status === 'complete') {
         await syncAndRedirect(result.createdSessionId);
+      } else if (result.status === 'needs_first_factor') {
+        setError('Please check your email to verify your account before logging in.');
+        console.log('Login needs first factor:', result);
+      } else {
+        setError('Further action required. Status: ' + result.status);
+        console.log('Login result:', result);
       }
     } catch (err) {
       if (err.errors?.[0]?.code === 'form_identifier_not_found') {
