@@ -121,6 +121,25 @@ const Login = () => {
       } else if (result.status === 'needs_first_factor') {
         setError('Please check your email to verify your account before logging in.');
         console.log('Login needs first factor:', result);
+      } else if (result.status === 'needs_second_factor') {
+        const email2FA = result.supportedSecondFactors?.find(f => f.strategy === 'email_code');
+        const phone2FA = result.supportedSecondFactors?.find(f => f.strategy === 'phone_code');
+        const totp2FA = result.supportedSecondFactors?.find(f => f.strategy === 'totp');
+        
+        if (email2FA) {
+          await signIn.prepareSecondFactor({ strategy: 'email_code', emailAddressId: email2FA.emailAddressId });
+          setSuccessMsg('2FA code sent to your email.');
+          setMode('second-factor-email');
+        } else if (phone2FA) {
+          await signIn.prepareSecondFactor({ strategy: 'phone_code', phoneNumberId: phone2FA.phoneNumberId });
+          setSuccessMsg('2FA code sent to your phone.');
+          setMode('second-factor-phone');
+        } else if (totp2FA) {
+          setSuccessMsg('Please enter your Authenticator app code.');
+          setMode('second-factor-totp');
+        } else {
+          setError('2FA required but no supported methods found.');
+        }
       } else {
         setError('Further action required. Status: ' + result.status);
         console.log('Login result:', result);
@@ -235,6 +254,30 @@ const Login = () => {
       }
     } catch (err) {
       setError(err.errors?.[0]?.longMessage || 'Could not set password.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ========== SECOND FACTOR ==========
+  const handleVerifySecondFactor = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
+    try {
+      let strategy = '';
+      if (mode === 'second-factor-email') strategy = 'email_code';
+      if (mode === 'second-factor-phone') strategy = 'phone_code';
+      if (mode === 'second-factor-totp') strategy = 'totp';
+
+      const result = await signIn.attemptSecondFactor({ strategy, code: verificationCode });
+      if (result.status === 'complete') {
+        await syncAndRedirect(result.createdSessionId);
+      } else {
+        setError('Verification failed. Status: ' + result.status);
+      }
+    } catch (err) {
+      setError(err.errors?.[0]?.longMessage || 'Invalid 2FA code.');
     } finally {
       setIsLoading(false);
     }
@@ -384,6 +427,27 @@ const Login = () => {
           </div>
           <button type="submit" disabled={isLoading} className={btnClass}>
             {isLoading ? 'Setting password...' : 'Set Password & Login'}
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-500 mt-5">
+          <button onClick={() => switchMode('login')} className={linkClass}>← Back to Sign In</button>
+        </p>
+      </FormWrapper>
+    );
+  }
+
+  // ========== TWO FACTOR AUTHENTICATION ==========
+  if (mode.startsWith('second-factor')) {
+    return (
+      <FormWrapper title="Verification Required" subtitle="Please verify your identity" error={error} successMsg={successMsg}>
+        <form onSubmit={handleVerifySecondFactor} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Authentication Code</label>
+            <input type="text" placeholder="Enter authentication code" value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)} className={`${inputClass} text-center tracking-widest text-lg font-mono`} required />
+          </div>
+          <button type="submit" disabled={isLoading} className={btnClass}>
+            {isLoading ? 'Verifying...' : 'Verify Code'}
           </button>
         </form>
         <p className="text-center text-sm text-gray-500 mt-5">
