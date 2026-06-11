@@ -1,0 +1,17 @@
+{
+  "name": "workbuff-root",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix ems\" \"npm run start --prefix server\"",
+    "build": "npm run build --prefix ems",
+    "start": "npm run start --prefix server",
+    "postinstall": "npm install --prefix server && npm install --prefix ems"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "vite": "^8.0.16"
+  }
+}
