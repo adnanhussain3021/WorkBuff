@@ -38,7 +38,7 @@ A full-stack **Employee Management System** built with React, Node.js, Express, 
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | React 18, Vite, Tailwind CSS |
+| **Frontend** | React, Vite, Tailwind CSS |
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB (Mongoose ODM) |
 | **Auth** | Clerk |
